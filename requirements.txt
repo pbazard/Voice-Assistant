@@ -44,5 +44,8 @@ transformers==4.1.1
 typing-extensions==3.7.4.3
 
 # If problems installing on Macos 10.15
+# Very likely you need to specify the directory path where the compiler can find the source programs like portaudio.h.
+# Under assumption that the headers are in /usr/local/include directory, try to run the below command in the Terminal:
 # pip install --global-option='build_ext' --global-option='-I/usr/local/include' --global-option='-L/usr/local/lib' pyaudio
-pyaudio==0.2.11
+# https://stackoverflow.com/questions/62751582/pyaudio-installation-always-fails-on-mac
+#pyaudio==0.2.11
