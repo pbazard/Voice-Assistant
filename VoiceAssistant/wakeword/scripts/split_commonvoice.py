@@ -3,6 +3,8 @@ import pandas as pd
 import argparse
 from pydub import AudioSegment
 from pydub.utils import make_chunks
+
+
 # from pandarallel import pandarallel
 # pandarallel.initialize(progress_bar=True)
 
@@ -14,7 +16,7 @@ def main(args):
     def chunk_and_save(file):
         path = os.path.join(args.data_path, file)
         audio = AudioSegment.from_file(path)
-        length = args.seconds * 1000 # this is in miliseconds
+        length = args.seconds * 1000  # this is in milliseconds
         chunks = make_chunks(audio, length)
         names = []
         for i, chunk in enumerate(chunks):
@@ -23,7 +25,9 @@ def main(args):
             wav_path = os.path.join(args.save_path, name)
             chunk.export(wav_path, format="wav")
         return names
+
     df.path.apply(lambda x: chunk_and_save(x))
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="script to split common voice data into chunks")

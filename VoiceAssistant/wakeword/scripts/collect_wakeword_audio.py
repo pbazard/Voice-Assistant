@@ -28,12 +28,11 @@ class Listener:
         self.p = pyaudio.PyAudio()
 
         self.stream = self.p.open(format=self.FORMAT,
-                        channels=self.channels,
-                        rate=self.sample_rate,
-                        input=True,
-                        output=True,
-                        frames_per_buffer=self.chunk)
-
+                                  channels=self.channels,
+                                  rate=self.sample_rate,
+                                  input=True,
+                                  output=True,
+                                  frames_per_buffer=self.chunk)
 
     def save_audio(self, file_name, frames):
         print('saving file to {}'.format(file_name))
@@ -65,10 +64,11 @@ def interactive(args):
             frames = []
             # input('press enter to continue. the recoding will be {} seconds. press ctrl + c to exit'.format(args.seconds))
             print('begin recording....')
-            input('press enter to continue. the recoding will be {} seconds. press ctrl + c to exit'.format(args.seconds))
+            input(
+                'press enter to continue. the recoding will be {} seconds. press ctrl + c to exit'.format(args.seconds))
             time.sleep(0.2)  # so the mic don't pick up clicking sound
-            for i in range(int((listener.sample_rate/listener.chunk) * listener.record_seconds)):
-                data = listener.stream.read(listener.chunk, exception_on_overflow = False)
+            for i in range(int((listener.sample_rate / listener.chunk) * listener.record_seconds)):
+                data = listener.stream.read(listener.chunk, exception_on_overflow=False)
                 frames.append(data)
             save_path = os.path.join(args.interactive_save_path, "{}.wav".format(index))
             listener.save_audio(save_path, frames)
@@ -85,12 +85,12 @@ def main(args):
     print('recording...')
     try:
         while True:
-            if listener.record_seconds == None:  # record until keyboard interupt
+            if listener.record_seconds is None:  # record until keyboard interupt
                 print('recording indefinitely... ctrl + c to cancel', end="\r")
                 data = listener.stream.read(listener.chunk)
                 frames.append(data)
             else:
-                for i in range(int((listener.sample_rate/listener.chunk) * listener.record_seconds)):
+                for i in range(int((listener.sample_rate / listener.chunk) * listener.record_seconds)):
                     data = listener.stream.read(listener.chunk)
                     frames.append(data)
                 raise Exception('done recording')
@@ -99,7 +99,6 @@ def main(args):
         print('Keyboard Interrupt')
     except Exception as e:
         print(str(e))
-
 
     print('finish recording...')
     listener.save_audio(args.save_path, frames)

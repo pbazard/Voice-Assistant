@@ -3,11 +3,11 @@ import argparse
 from pydub import AudioSegment
 from pydub.utils import make_chunks
 
-def main(args):
 
+def main(args):
     def chunk_and_save(file):
         audio = AudioSegment.from_file(file)
-        length = args.seconds * 1000 # this is in miliseconds
+        length = args.seconds * 1000  # this is in milliseconds
         chunks = make_chunks(audio, length)
         names = []
         for i, chunk in enumerate(chunks):
@@ -18,6 +18,7 @@ def main(args):
         return names
 
     chunk_and_save(args.audio_file_name)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="script to split audio files into chunks")
