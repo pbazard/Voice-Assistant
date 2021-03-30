@@ -26,37 +26,37 @@ def main(args):
         })
     random.shuffle(data)
 
-    f = open(args.save_json_path +"/"+ "train.json", "w")
-    
-    with open(args.save_json_path +"/"+ 'train.json','w') as f:
-        d = len(data)
-        i=0
-        while(i<int(d-d/percent)):
-            r=data[i]
-            line = json.dumps(r)
-            f.write(line + "\n")
-            i = i+1
-    
-    f = open(args.save_json_path +"/"+ "test.json", "w")
+    f = open(args.save_json_path + "/" + "train.json", "w")
 
-    with open(args.save_json_path +"/"+ 'test.json','w') as f:
+    with open(args.save_json_path + "/" + 'train.json', 'w') as f:
         d = len(data)
-        i=int(d-d/percent)
-        while(i<d):
-            r=data[i]
+        i = 0
+        while i < int(d - d / percent):
+            r = data[i]
             line = json.dumps(r)
             f.write(line + "\n")
-            i = i+1
-    
+            i = i + 1
+
+    # f = open(args.save_json_path + "/" + "test.json", "w")
+
+    with open(args.save_json_path + "/" + 'test.json', 'w') as f:
+        d = len(data)
+        i = int(d - d / percent)
+        while i < d:
+            r = data[i]
+            line = json.dumps(r)
+            f.write(line + "\n")
+            i = i + 1
+
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="""
+    parser = argparse.ArgumentParser(description=
+                                     """
     Utility script to create training json file for wakeword.
-
     There should be two directories. one that has all of the 0 labels
     and one with all the 1 labels
     """
-    )
+                                     )
     parser.add_argument('--zero_label_dir', type=str, default=None, required=True,
                         help='directory of clips with zero labels')
     parser.add_argument('--one_label_dir', type=str, default=None, required=True,
