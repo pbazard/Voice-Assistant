@@ -19,7 +19,7 @@ class MFCC(nn.Module):
             x, self.sample_rate, self.window_stride,
             self.fft_size, self.num_filt, self.num_coeffs
         )
-    
+
     def forward(self, x):
         return torch.Tensor(self.mfcc(x.squeeze(0).numpy())).transpose(0, 1).unsqueeze(0)
 
@@ -40,9 +40,9 @@ class RandomCut(nn.Module):
         side = torch.randint(0, 1, (1,))
         cut = torch.randint(1, self.max_cut, (1,))
         if side == 0:
-            return x[:-cut,:,:]
+            return x[:-cut, :, :]
         elif side == 1:
-            return x[cut:,:,:]
+            return x[cut:, :, :]
 
 
 class SpecAugment(nn.Module):
@@ -65,7 +65,7 @@ class SpecAugment(nn.Module):
             torchaudio.transforms.TimeMasking(time_mask_param=time_mask)
         )
 
-        policies = { 1: self.policy1, 2: self.policy2, 3: self.policy3 }
+        policies = {1: self.policy1, 2: self.policy2, 3: self.policy3}
         self._forward = policies[policy]
 
     def forward(self, x):
@@ -74,13 +74,13 @@ class SpecAugment(nn.Module):
     def policy1(self, x):
         probability = torch.rand(1, 1).item()
         if self.rate > probability:
-            return  self.specaug(x)
+            return self.specaug(x)
         return x
 
     def policy2(self, x):
         probability = torch.rand(1, 1).item()
         if self.rate > probability:
-            return  self.specaug2(x)
+            return self.specaug2(x)
         return x
 
     def policy3(self, x):
@@ -111,7 +111,7 @@ class WakeWordData(torch.utils.data.Dataset):
         if torch.is_tensor(idx):
             idx = idx.item()
 
-        try:    
+        try:
             file_path = self.data.key.iloc[idx]
             waveform, sr = torchaudio.load(file_path, normalization=False)
             if sr > self.sr:
@@ -128,6 +128,7 @@ class WakeWordData(torch.utils.data.Dataset):
 
 rand_cut = RandomCut(max_cut=10)
 
+
 def collate_fn(data):
     """Batch and pad wakeword data"""
     mfccs = []
@@ -139,8 +140,8 @@ def collate_fn(data):
 
     # pad mfccs to ensure all tensors are same size in the time dim
     mfccs = nn.utils.rnn.pad_sequence(mfccs, batch_first=True)  # batch, seq_len, feature
-    mfccs = mfccs.transpose(0, 1) # seq_len, batch, feature
+    mfccs = mfccs.transpose(0, 1)  # seq_len, batch, feature
     mfccs = rand_cut(mfccs)
-    #print(mfccs.shape)
+    # print(mfccs.shape)
     labels = torch.Tensor(labels)
     return mfccs, labels

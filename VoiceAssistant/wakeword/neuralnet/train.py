@@ -23,14 +23,14 @@ def save_checkpoint(checkpoint_path, model, optimizer, scheduler, model_params, 
 
 
 def binary_accuracy(preds, y):
-    #round predictions to the closest integer
+    # round predictions to the closest integer
     rounded_preds = torch.round(preds)
     acc = rounded_preds.eq(y.view_as(rounded_preds)).sum().item() / len(y)
     return acc
 
 
 def test(test_loader, model, device, epoch):
-    print("\n starting test for epoch %s"%epoch)
+    print("\n starting test for epoch %s" % epoch)
     accs = []
     preds = []
     labels = []
@@ -44,7 +44,7 @@ def test(test_loader, model, device, epoch):
             labels += torch.flatten(label).cpu()
             accs.append(acc)
             print("Iter: {}/{}, accuracy: {}".format(idx, len(test_loader), acc), end="\r")
-    average_acc = sum(accs)/len(accs) 
+    average_acc = sum(accs) / len(accs)
     print('Average test Accuracy:', average_acc, "\n")
     report = classification_report(labels, preds)
     print(report)
@@ -52,7 +52,7 @@ def test(test_loader, model, device, epoch):
 
 
 def train(train_loader, model, optimizer, loss_fn, device, epoch):
-    print("\n starting train for epoch %s"%epoch)
+    print("\n starting train for epoch %s" % epoch)
     losses = []
     preds = []
     labels = []
@@ -72,7 +72,7 @@ def train(train_loader, model, optimizer, loss_fn, device, epoch):
         labels += torch.flatten(label).cpu()
 
         print("epoch: {}, Iter: {}/{}, loss: {}".format(epoch, idx, len(train_loader), loss.item()), end="\r")
-    avg_train_loss = sum(losses)/len(losses)
+    avg_train_loss = sum(losses) / len(losses)
     acc = binary_accuracy(torch.Tensor(preds), torch.Tensor(labels))
     print('avg train loss:', avg_train_loss, "avg train acc", acc)
     report = classification_report(torch.Tensor(labels).numpy(), torch.Tensor(preds).numpy())
@@ -90,19 +90,19 @@ def main(args):
 
     kwargs = {'num_workers': args.num_workers, 'pin_memory': True} if use_cuda else {}
     train_loader = data.DataLoader(dataset=train_dataset,
-                                        batch_size=args.batch_size,
-                                        shuffle=True,
-                                        collate_fn=collate_fn,
-                                        **kwargs)
+                                   batch_size=args.batch_size,
+                                   shuffle=True,
+                                   collate_fn=collate_fn,
+                                   **kwargs)
     test_loader = data.DataLoader(dataset=test_dataset,
-                                        batch_size=args.eval_batch_size,
-                                        shuffle=True,
-                                        collate_fn=collate_fn,
-                                        **kwargs)
+                                  batch_size=args.eval_batch_size,
+                                  shuffle=True,
+                                  collate_fn=collate_fn,
+                                  **kwargs)
 
     model_params = {
         "num_classes": 1, "feature_size": 40, "hidden_size": args.hidden_size,
-        "num_layers": 1, "dropout" :0.1, "bidirectional": False
+        "num_layers": 1, "dropout": 0.1, "bidirectional": False
     }
     model = LSTMWakeWord(**model_params, device=device)
     model = model.to(device)
@@ -138,8 +138,8 @@ def main(args):
             best_epoch = epoch
 
         table = [["Train ACC", train_acc], ["Test ACC", test_acc],
-                ["Best Train ACC", best_train_acc], ["Best Test ACC", best_test_acc],
-                ["Best Epoch", best_epoch]]
+                 ["Best Train ACC", best_train_acc], ["Best Test ACC", best_test_acc],
+                 ["Best Epoch", best_epoch]]
         # print("\ntrain acc:", train_acc, "test acc:", test_acc, "\n",
         #     "best train acc", best_train_acc, "best test acc", best_test_acc)
         print(tabulate(table))
